@@ -4,7 +4,7 @@ from .views import StudentAPIVIEW , StudentDetailsAPIVIEW
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('student/', StudentDetailsAPIVIEW.as_view()),
-    path('student-details/<int:id>', StudentAPIVIEW.as_view()),
+    path('student/',StudentAPIVIEW.as_view()),
+    path('student/<int:id>', StudentDetailsAPIVIEW.as_view()),
     
 ]
