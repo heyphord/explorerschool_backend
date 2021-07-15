@@ -10,7 +10,7 @@ from .serializers import StudentSerializer
 # Create your views here.
 
 class StudentAPIVIEW(APIView):
-    
+
     def get( self, request):
         students = Student.objects.all()
         serializer = StudentSerializer( students, many=True)
@@ -25,30 +25,37 @@ class StudentAPIVIEW(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class StudentDetailsAPIVIEW(APIView):
-    def getStudentById(self, id):
+   
+
+    def get(self,request, id):
         try:
-            return Student.objects.get(id=id)
+            student =Student.objects.get(id=id)
+            serializer = StudentSerializer(student)
+            return Response(serializer.data)
 
         except Student.DoesNotExist:
-            return Response( status =status.HTTP_404_NOT_FOUND)
-
-
-    def get(self, request, id):
-        student = self.getStudentById(id)
-        serializer = StudentSerializer(student, request.data)
-        return Response(serializer.data)
+            return Response( "Student with id does not exist",status =status.HTTP_404_NOT_FOUND)
+        
 
 
     def put(self, request, id):
-        student = self.getStudentById(id)
-        serializer = StudentSerializer(student)
+        try:
+            student =Student.objects.get(id=id)
+            serializer = StudentSerializer(student, request.data)
 
-        if serializer.is_valid():
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
             serializer.save()
             return Response(serializer.data, status =status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Student.DoesNotExist:
+            return Response( "Student with id does not exist",status =status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, id):
-        student = self.getStudentById(id)
-        student.delete()
-        return Response(status = status.HTTP_204_NO_CONTENT)
+        try:
+            student =Student.objects.get(id=id)
+            student.delete()
+            return Response("Deleted successfulyy",status = status.HTTP_204_NO_CONTENT)
+        except Student.DoesNotExist:
+            return Response("Student with id does not exist",status = status.HTTP_404_NOT_FOUND)
