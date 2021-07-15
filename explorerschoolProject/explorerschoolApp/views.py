@@ -111,3 +111,28 @@ class TutorDetailsAPIVIEW(APIView):
             return Response("Deleted successfulyy",status = status.HTTP_204_NO_CONTENT)
         except Tutor.DoesNotExist:
             return Response("Tutor with id does not exist",status = status.HTTP_404_NOT_FOUND)
+
+
+#assign student to tutors
+class StudentToTutorAPIVIEW(APIView):
+
+    
+
+    def post(self, request):
+        
+        # return Response(request.data['tutor_id'],status = status.HTTP_404_NOT_FOUND)
+        try:
+            tutor =Tutor.objects.get(id=request.data['tutor_id'])
+            student = Student.objects.get(id = request.data['student_id'])
+            tutor.students.add(student)
+            tutor.save()
+            serializer = TutorSerializer(tutor)
+            return Response(serializer.data,status = status.HTTP_200_OK)
+
+        except Tutor.DoesNotExist: 
+            return Response("Tutor with id does not exist",status = status.HTTP_404_NOT_FOUND)
+            
+        except Student.DoesNotExist: 
+            return Response("Student with id does not exist",status = status.HTTP_404_NOT_FOUND)
+
+       
