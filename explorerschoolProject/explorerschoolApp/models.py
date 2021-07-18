@@ -18,6 +18,7 @@ class Student(models.Model):
 class Tutor(models.Model):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
+    email = models.EmailField(max_length=100)
     students = models.ManyToManyField(Student)
 
     class Meta:
